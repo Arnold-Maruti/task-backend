@@ -2,7 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from app.models import User, Task, Category
+
 
 
 migrate = Migrate()
@@ -19,6 +19,8 @@ def create_app():
     # initializing the extensions
     migrate.init_app(app, db)
     db.init_app(app)
+
+    from app.models import User, Task, Category
 
     # Cross Origin Resource Sharing is a security feature that enables requests to come from specific origins.
     CORS(app,origins=["http://localhost:5173"]) 
