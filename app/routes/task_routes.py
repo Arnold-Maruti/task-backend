@@ -1,6 +1,12 @@
 from flask import Blueprint, jsonify, request
 from app.models import Task,User,Category
 from app import db
+from app.schemas import TaskSchema,TaskUpdateSchema
+from marshmallow import ValidationError
+
+task_schema=TaskSchema()
+task_update_schema=TaskUpdateSchema()
+tasks_schema=TaskSchema(many=True)
 
 task_bp=Blueprint("task_bp",__name__,url_prefix="/api/tasks")
 
@@ -18,16 +24,21 @@ def get_all_user_tasks():
     if request.method=="GET":
        tasks=Task.query.filter_by(user_id=user_id).all()
 
-       return jsonify([task.to_dict() for task in tasks]),200
+       return jsonify(tasks_schema.dump(tasks)),200
 
     task_data=request.get_json()
 
-    title=task_data.get("title")
-    description=task_data.get("description")
-    status=task_data.get("status","pending")
-    due_date=task_data.get("due_date")
-    priority=task_data.get("priority","medium")
-    category_id=task_data.get("category_id")
+    try:
+        validated_data=task_schema.load(task_data)
+    except ValidationError as err:
+        return jsonify({"errors":err.messages}),400
+
+    title=validated_data.get("title")
+    description=validated_data.get("description")
+    status=validated_data.get("status","pending")
+    due_date=validated_data.get("due_date")
+    priority=validated_data.get("priority","medium")
+    category_id=validated_data.get("category_id")
 
     new_task=Task(
         title=title,

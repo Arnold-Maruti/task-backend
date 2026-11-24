@@ -1,1 +1,1 @@
-from app.schemas.task_schema import TaskSchema
+from app.schemas.task_schema import TaskSchema,TaskUpdateSchema
