@@ -4,7 +4,7 @@ from app import db
 
 task_bp=Blueprint("task_bp",__name__,url_prefix="/api/tasks")
 
-@task_bp.route("/",methods=["GET,POST"])
+@task_bp.route("/",methods=["GET","POST"])
 def get_all_user_tasks():
     user_id=request.args.get("X-User-Id")
 
